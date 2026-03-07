@@ -6,7 +6,7 @@ import PageHeader from '@/components/common/PageHeader.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
 import { formatDateTime } from '@/utils/format'
 import type { MappingForm, Mapping } from '@/types'
-import { ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 
 const store = useMappingStore()
 
@@ -81,20 +81,6 @@ async function handleSubmit() {
     submitting.value = false
   }
 }
-
-async function handleDelete(row: Mapping) {
-  try {
-    await ElMessageBox.confirm(
-      `Delete mapping for machine "${row.machine_id}"?`,
-      'Confirm Delete',
-      { type: 'warning' },
-    )
-    await store.removeMapping(row.id)
-    refresh()
-  } catch {
-    // cancelled
-  }
-}
 </script>
 
 <template>
@@ -132,13 +118,10 @@ async function handleDelete(row: Mapping) {
             {{ formatDateTime(row.updated_at) }}
           </template>
         </el-table-column>
-        <el-table-column label="Actions" width="160" align="center" fixed="right">
+        <el-table-column label="Actions" width="100" align="center" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link size="small" @click="openEditDialog(row)">
               Edit
-            </el-button>
-            <el-button type="danger" link size="small" @click="handleDelete(row)">
-              Delete
             </el-button>
           </template>
         </el-table-column>
