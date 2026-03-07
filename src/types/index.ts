@@ -125,22 +125,24 @@ export interface MonitoringAlert {
 
 export interface MonitoringStatus {
   total_machines: number
-  online_machines: number
-  offline_machines: number
-  online_pads: number
-  offline_pads: number
-  unknown_devices: number
+  machines_online: number
+  machines_offline: number
+  pads_online: number
+  pads_offline: number
+  no_product_set: number
 }
 
 // ============ Dashboard ============
 
 export interface DashboardStats {
   total_machines: number
-  online_machines: number
-  offline_machines: number
-  online_pads: number
-  offline_pads: number
-  unknown_devices: number
+  machines_online: number
+  machines_offline: number
+  pads_online: number
+  pads_offline: number
+  no_product_set: number
+  today_record_count: number
+  today_total_stitches: number
 }
 
 export interface DailyProduction {

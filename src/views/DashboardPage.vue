@@ -19,7 +19,7 @@ onMounted(() => {
     <PageHeader title="Dashboard" />
 
     <el-row :gutter="16" style="margin-bottom: 20px">
-      <el-col :xs="12" :sm="8" :md="4">
+      <el-col :xs="12" :sm="8" :md="6" :lg="3">
         <StatCard
           title="Total Machines"
           :value="store.stats.total_machines"
@@ -27,44 +27,60 @@ onMounted(() => {
           color="#409eff"
         />
       </el-col>
-      <el-col :xs="12" :sm="8" :md="4">
+      <el-col :xs="12" :sm="8" :md="6" :lg="3">
         <StatCard
-          title="Online Machines"
-          :value="store.stats.online_machines"
+          title="Machines Online"
+          :value="store.stats.machines_online"
           icon="el-icon-circle-check"
           color="#67c23a"
         />
       </el-col>
-      <el-col :xs="12" :sm="8" :md="4">
+      <el-col :xs="12" :sm="8" :md="6" :lg="3">
         <StatCard
-          title="Offline Machines"
-          :value="store.stats.offline_machines"
+          title="Machines Offline"
+          :value="store.stats.machines_offline"
           icon="el-icon-circle-close"
           color="#f56c6c"
         />
       </el-col>
-      <el-col :xs="12" :sm="8" :md="4">
+      <el-col :xs="12" :sm="8" :md="6" :lg="3">
         <StatCard
-          title="Online Pads"
-          :value="store.stats.online_pads"
+          title="Pads Online"
+          :value="store.stats.pads_online"
           icon="el-icon-monitor"
           color="#67c23a"
         />
       </el-col>
-      <el-col :xs="12" :sm="8" :md="4">
+      <el-col :xs="12" :sm="8" :md="6" :lg="3">
         <StatCard
-          title="Offline Pads"
-          :value="store.stats.offline_pads"
+          title="Pads Offline"
+          :value="store.stats.pads_offline"
           icon="el-icon-warning"
           color="#e6a23c"
         />
       </el-col>
-      <el-col :xs="12" :sm="8" :md="4">
+      <el-col :xs="12" :sm="8" :md="6" :lg="3">
         <StatCard
-          title="Unknown Devices"
-          :value="store.stats.unknown_devices"
-          icon="el-icon-question-filled"
+          title="No Product Set"
+          :value="store.stats.no_product_set"
+          icon="el-icon-warning-filled"
           color="#909399"
+        />
+      </el-col>
+      <el-col :xs="12" :sm="8" :md="6" :lg="3">
+        <StatCard
+          title="Today's Records"
+          :value="store.stats.today_record_count"
+          icon="el-icon-document"
+          color="#409eff"
+        />
+      </el-col>
+      <el-col :xs="12" :sm="8" :md="6" :lg="3">
+        <StatCard
+          title="Today's Stitches"
+          :value="store.stats.today_total_stitches"
+          icon="el-icon-data-line"
+          color="#67c23a"
         />
       </el-col>
     </el-row>

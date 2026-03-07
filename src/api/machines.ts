@@ -8,3 +8,8 @@ export function fetchMachines(params?: MachineListParams) {
 export function fetchMachine(id: number) {
   return api.get<Machine>(`/api/machines/${id}`)
 }
+
+export function fetchMachineByMachineId(machineId: string) {
+  return api.get<Machine>(`/api/machines/by-machine-id/${machineId}`)
+}
+

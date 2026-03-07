@@ -14,8 +14,8 @@ export const useProductionStore = defineStore('production', () => {
     loading.value = true
     try {
       const { data } = await fetchProductionRecords(params)
-      records.value = data.results
-      total.value = data.count
+      records.value = data.items
+      total.value = data.total
     } finally {
       loading.value = false
     }
@@ -25,7 +25,7 @@ export const useProductionStore = defineStore('production', () => {
     loading.value = true
     try {
       const { data } = await fetchProductionRecord(id)
-      currentRecord.value = data
+      currentRecord.value = data as ProductionRecord
     } finally {
       loading.value = false
     }

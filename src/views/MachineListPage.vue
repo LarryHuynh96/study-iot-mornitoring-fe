@@ -33,7 +33,7 @@ onMounted(() => {
 })
 
 function goToDetail(row: Machine) {
-  router.push({ name: 'MachineDetail', params: { id: row.id } })
+  router.push({ name: 'MachineDetail', params: { id: row.machine_id } })
 }
 </script>
 

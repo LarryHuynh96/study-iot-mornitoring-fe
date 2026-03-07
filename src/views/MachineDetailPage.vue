@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useMachineStore } from '@/stores/machines'
 import { useProductionStore } from '@/stores/production'
@@ -12,20 +12,27 @@ const router = useRouter()
 const machineStore = useMachineStore()
 const productionStore = useProductionStore()
 
-watch(
-  () => route.params.id,
-  async (newId) => {
-    if (!newId) return
-    await machineStore.loadMachine(Number(newId))
-    if (machineStore.currentMachine) {
-      await productionStore.loadRecords({
-        machine_id: machineStore.currentMachine.machine_id,
-        page_size: 20,
-      })
-    }
-  },
-  { immediate: true },
-)
+async function loadMachineData() {
+  const machineId = String(route.params.id)
+  await machineStore.loadMachineByMachineId(machineId)
+  if (machineStore.currentMachine) {
+    await productionStore.loadRecords({
+      machine_id: machineStore.currentMachine.machine_id,
+      page_size: 20,
+    })
+  }
+}
+
+onMounted(() => {
+  loadMachineData()
+})
+
+// Watch for route param changes to reload data
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    loadMachineData()
+  }
+})
 
 function goToProductionDetail(id: number) {
   router.push({ name: 'ProductionDetail', params: { id } })

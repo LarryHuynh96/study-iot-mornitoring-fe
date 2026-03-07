@@ -40,11 +40,11 @@ const option = computed(() => ({
         label: { show: true, fontSize: 14, fontWeight: 'bold' },
       },
       data: [
-        { value: props.stats.online_machines, name: 'Online', itemStyle: { color: '#67c23a' } },
-        { value: props.stats.offline_machines, name: 'Offline', itemStyle: { color: '#f56c6c' } },
+        { value: props.stats.machines_online, name: 'Online', itemStyle: { color: '#67c23a' } },
+        { value: props.stats.machines_offline, name: 'Offline', itemStyle: { color: '#f56c6c' } },
         {
-          value: props.stats.unknown_devices,
-          name: 'Unknown',
+          value: props.stats.no_product_set,
+          name: 'No Product',
           itemStyle: { color: '#909399' },
         },
       ],

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchMachines, fetchMachine } from '@/api/machines'
+import { fetchMachines, fetchMachine, fetchMachineByMachineId } from '@/api/machines'
 import type { Machine, MachineListParams } from '@/types'
 
 export const useMachineStore = defineStore('machines', () => {
@@ -24,11 +24,29 @@ export const useMachineStore = defineStore('machines', () => {
     loading.value = true
     try {
       const { data } = await fetchMachine(id)
-      currentMachine.value = data
+      currentMachine.value = data as Machine
     } finally {
       loading.value = false
     }
   }
 
-  return { machines, currentMachine, total, loading, loadMachines, loadMachine }
+  async function loadMachineByMachineId(machineId: string) {
+    loading.value = true
+    try {
+      const { data } = await fetchMachineByMachineId(machineId)
+      currentMachine.value = data as Machine
+    } finally {
+      loading.value = false
+    }
+  }
+
+  return {
+    machines,
+    currentMachine,
+    total,
+    loading,
+    loadMachines,
+    loadMachine,
+    loadMachineByMachineId
+  }
 })
