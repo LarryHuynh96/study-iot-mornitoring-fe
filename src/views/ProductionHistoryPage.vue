@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Search } from '@element-plus/icons-vue'
 import { useProductionStore } from '@/stores/production'
 import { useTable } from '@/composables/useTable'
 import { useDateFilter } from '@/composables/useDateFilter'
@@ -41,6 +42,15 @@ function goToDetail(row: ProductionRecord) {
   router.push({ name: 'ProductionDetail', params: { id: row.id } })
 }
 
+function statusTagType(status: string): 'success' | 'warning' | 'danger' | 'info' {
+  switch (status?.toUpperCase()) {
+    case 'COMPLETED': return 'success'
+    case 'IN_PROGRESS': return 'warning'
+    case 'FAILED': return 'danger'
+    default: return 'info'
+  }
+}
+
 async function handleExport() {
   await store.exportRecords({
     ...getDateParams(),
@@ -65,7 +75,7 @@ async function handleExport() {
           placeholder="Search..."
           clearable
           style="width: 200px"
-          prefix-icon="el-icon-search"
+          :prefix-icon="Search"
         />
         <el-input
           v-model="machineIdFilter"
@@ -119,7 +129,13 @@ async function handleExport() {
             {{ formatDuration(row.duration_seconds) }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="Status" width="100" />
+        <el-table-column label="Status" width="120" align="center">
+          <template #default="{ row }">
+            <el-tag :type="statusTagType(row.status)" size="small" effect="plain">
+              {{ row.status }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="Actions" width="80" align="center">
           <template #default="{ row }">
             <el-button type="primary" link size="small" @click.stop="goToDetail(row)">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { Search } from '@element-plus/icons-vue'
 import { useMachineStore } from '@/stores/machines'
 import { useTable } from '@/composables/useTable'
 import PageHeader from '@/components/common/PageHeader.vue'
@@ -51,7 +52,7 @@ function goToDetail(row: Machine) {
           placeholder="Search by Machine ID or IP..."
           clearable
           style="width: 280px"
-          prefix-icon="el-icon-search"
+          :prefix-icon="Search"
         />
         <el-select
           v-model="statusFilter"

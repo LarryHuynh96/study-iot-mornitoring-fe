@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { Search } from '@element-plus/icons-vue'
 import { useMappingStore } from '@/stores/mappings'
 import { useTable } from '@/composables/useTable'
 import PageHeader from '@/components/common/PageHeader.vue'
@@ -97,7 +98,7 @@ async function handleSubmit() {
           placeholder="Search mappings..."
           clearable
           style="width: 280px"
-          prefix-icon="el-icon-search"
+          :prefix-icon="Search"
         />
         <el-button type="primary" @click="openAddDialog">
           Add Mapping

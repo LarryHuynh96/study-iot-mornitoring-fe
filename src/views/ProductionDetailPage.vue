@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProductionStore } from '@/stores/production'
 import PageHeader from '@/components/common/PageHeader.vue'
@@ -9,10 +9,16 @@ const route = useRoute()
 const router = useRouter()
 const store = useProductionStore()
 
-const recordId = Number(route.params.id)
+const recordId = computed(() => Number(route.params.id))
 
 onMounted(() => {
-  store.loadRecord(recordId)
+  store.loadRecord(recordId.value)
+})
+
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    store.loadRecord(Number(newId))
+  }
 })
 
 const record = computed(() => store.currentRecord)
@@ -24,6 +30,15 @@ const avgStitchesPerSec = computed(() => {
 
 function goBack() {
   router.push({ name: 'ProductionHistory' })
+}
+
+function statusTagType(status: string): 'success' | 'warning' | 'danger' | 'info' {
+  switch (status?.toUpperCase()) {
+    case 'COMPLETED': return 'success'
+    case 'IN_PROGRESS': return 'warning'
+    case 'FAILED': return 'danger'
+    default: return 'info'
+  }
 }
 </script>
 
@@ -44,7 +59,11 @@ function goBack() {
           <el-descriptions-item label="Record ID">{{ record.id }}</el-descriptions-item>
           <el-descriptions-item label="Machine ID">{{ record.machine_id }}</el-descriptions-item>
           <el-descriptions-item label="Product ID">{{ record.product_id }}</el-descriptions-item>
-          <el-descriptions-item label="Status">{{ record.status }}</el-descriptions-item>
+          <el-descriptions-item label="Status">
+            <el-tag :type="statusTagType(record.status)" size="small" effect="plain">
+              {{ record.status }}
+            </el-tag>
+          </el-descriptions-item>
           <el-descriptions-item label="Start Time">
             {{ formatDateTime(record.start_time) }}
           </el-descriptions-item>

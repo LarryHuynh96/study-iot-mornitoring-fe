@@ -46,6 +46,15 @@ function goToProductionHistory() {
     })
   }
 }
+
+function statusTagType(status: string): 'success' | 'warning' | 'danger' | 'info' {
+  switch (status?.toUpperCase()) {
+    case 'COMPLETED': return 'success'
+    case 'IN_PROGRESS': return 'warning'
+    case 'FAILED': return 'danger'
+    default: return 'info'
+  }
+}
 </script>
 
 <template>
@@ -145,10 +154,25 @@ function goToProductionHistory() {
               {{ formatDuration(row.duration_seconds) }}
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="Status" />
+          <el-table-column label="Status" width="120" align="center">
+            <template #default="{ row }">
+              <el-tag :type="statusTagType(row.status)" size="small" effect="plain">
+                {{ row.status }}
+              </el-tag>
+            </template>
+          </el-table-column>
         </el-table>
         <el-empty v-else description="No production records" :image-size="60" />
       </el-card>
     </template>
+
+    <el-empty
+      v-if="!machineStore.loading && !machineStore.currentMachine"
+      description="Machine not found"
+    >
+      <el-button type="primary" @click="router.push('/machines')">
+        Back to Machines
+      </el-button>
+    </el-empty>
   </div>
 </template>
