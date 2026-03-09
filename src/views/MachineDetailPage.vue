@@ -5,7 +5,7 @@ import { useMachineStore } from '@/stores/machines'
 import { useProductionStore } from '@/stores/production'
 import PageHeader from '@/components/common/PageHeader.vue'
 import StatusBadge from '@/components/common/StatusBadge.vue'
-import { formatDateTime, formatIP, formatDuration } from '@/utils/format'
+import { formatDateTime, formatIP, calcDuration } from '@/utils/format'
 
 const route = useRoute()
 const router = useRouter()
@@ -44,15 +44,6 @@ function goToProductionHistory() {
       name: 'ProductionHistory',
       query: { machine_id: machineStore.currentMachine.machine_id },
     })
-  }
-}
-
-function statusTagType(status: string): 'success' | 'warning' | 'danger' | 'info' {
-  switch (status?.toUpperCase()) {
-    case 'COMPLETED': return 'success'
-    case 'IN_PROGRESS': return 'warning'
-    case 'FAILED': return 'danger'
-    default: return 'info'
   }
 }
 </script>
@@ -148,17 +139,10 @@ function statusTagType(status: string): 'success' | 'warning' | 'danger' | 'info
               {{ formatDateTime(row.end_time) }}
             </template>
           </el-table-column>
-          <el-table-column prop="stitch_count" label="Stitches" />
+          <el-table-column prop="sewing_stitches" label="Stitches" />
           <el-table-column label="Duration">
             <template #default="{ row }">
-              {{ formatDuration(row.duration_seconds) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Status" width="120" align="center">
-            <template #default="{ row }">
-              <el-tag :type="statusTagType(row.status)" size="small" effect="plain">
-                {{ row.status }}
-              </el-tag>
+              {{ calcDuration(row.start_time, row.end_time) }}
             </template>
           </el-table-column>
         </el-table>

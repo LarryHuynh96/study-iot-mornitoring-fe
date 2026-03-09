@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
+import {
+  Monitor,
+  Goods,
+  TrendCharts,
+  BellFilled,
+  Cpu,
+  Clock,
+  CircleCheckFilled
+} from '@element-plus/icons-vue'
 import { useDashboardStore } from '@/stores/dashboard'
 import PageHeader from '@/components/common/PageHeader.vue'
 import StatCard from '@/components/dashboard/StatCard.vue'
 import MachineStatusChart from '@/components/dashboard/MachineStatusChart.vue'
 import ProductionChart from '@/components/dashboard/ProductionChart.vue'
 import { formatDateTime } from '@/utils/format'
+import type { MonitoringAlert } from '@/types'
 
 const store = useDashboardStore()
 
@@ -15,7 +25,7 @@ onMounted(() => {
 
 const hasAlerts = computed(() => store.alerts && store.alerts.length > 0)
 
-const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | undefined => {
+const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' => {
   switch (severity?.toLowerCase()) {
     case 'critical':
     case 'error':
@@ -23,9 +33,8 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
     case 'warning':
       return 'warning'
     case 'info':
-      return 'info'
     default:
-      return undefined
+      return 'info'
   }
 }
 </script>
@@ -41,7 +50,7 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
         <span>System Status</span>
       </div>
       <el-row :gutter="16">
-        <el-col :xs="24" :sm="12" :md="8">
+        <el-col :xs="24" :sm="12" :lg="6">
           <StatCard
             title="Total Machines"
             :value="store.stats.total_machines"
@@ -49,25 +58,23 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
             status="info"
           />
         </el-col>
-        <el-col :xs="12" :sm="6" :md="4">
+        <el-col :xs="12" :sm="6" :lg="4">
           <StatCard
-            title="Online"
+            title="Machines Online"
             :value="store.stats.machines_online"
             icon="CircleCheck"
             :status="store.stats.machines_online > 0 ? 'success' : 'default'"
-            subtitle="Machines"
           />
         </el-col>
-        <el-col :xs="12" :sm="6" :md="4">
+        <el-col :xs="12" :sm="6" :lg="4">
           <StatCard
-            title="Offline"
+            title="Machines Offline"
             :value="store.stats.machines_offline"
             icon="CircleClose"
             :status="store.stats.machines_offline > 0 ? 'danger' : 'default'"
-            subtitle="Machines"
           />
         </el-col>
-        <el-col :xs="12" :sm="6" :md="4">
+        <el-col :xs="12" :sm="6" :lg="5">
           <StatCard
             title="Pads Online"
             :value="store.stats.pads_online"
@@ -75,7 +82,7 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
             :status="store.stats.pads_online > 0 ? 'success' : 'default'"
           />
         </el-col>
-        <el-col :xs="12" :sm="6" :md="4">
+        <el-col :xs="12" :sm="6" :lg="5">
           <StatCard
             title="Pads Offline"
             :value="store.stats.pads_offline"
@@ -93,29 +100,31 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
         <span>Production Status</span>
       </div>
       <el-row :gutter="16">
-        <el-col :xs="12" :sm="8">
+        <el-col :xs="24" :sm="8">
           <StatCard
-            title="No Product Set"
+            title="Machines Without Product"
             :value="store.stats.no_product_set"
             icon="WarningFilled"
             :status="store.stats.no_product_set > 0 ? 'warning' : 'success'"
-            subtitle="Idle Machines"
+            subtitle="Idle machines needing setup"
           />
         </el-col>
         <el-col :xs="12" :sm="8">
           <StatCard
-            title="Today's Records"
+            title="Today's Production Records"
             :value="store.stats.today_record_count"
             icon="Document"
             status="info"
+            subtitle="Completed records"
           />
         </el-col>
-        <el-col :xs="24" :sm="8">
+        <el-col :xs="12" :sm="8">
           <StatCard
-            title="Today's Stitches"
+            title="Today's Total Stitches"
             :value="store.stats.today_total_stitches.toLocaleString()"
             icon="DataLine"
             status="success"
+            subtitle="Total sewing stitches"
           />
         </el-col>
       </el-row>
@@ -157,7 +166,7 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
           :default-sort="{ prop: 'created_at', order: 'descending' }"
         >
           <el-table-column prop="machine_id" label="Machine ID" width="140">
-            <template #default="{ row }">
+            <template #default="{ row }: { row: MonitoringAlert }">
               <div class="machine-cell">
                 <el-icon><Cpu /></el-icon>
                 <span>{{ row.machine_id || 'N/A' }}</span>
@@ -166,7 +175,7 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
           </el-table-column>
 
           <el-table-column prop="ip_address" label="IP Address" width="150">
-            <template #default="{ row }">
+            <template #default="{ row }: { row: MonitoringAlert }">
               <el-text type="info" size="small">
                 {{ row.ip_address || 'Unknown' }}
               </el-text>
@@ -174,7 +183,7 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
           </el-table-column>
 
           <el-table-column prop="alert_type" label="Alert Type" width="180">
-            <template #default="{ row }">
+            <template #default="{ row }: { row: MonitoringAlert }">
               <el-tag
                 :type="alertSeverityType(row.severity)"
                 size="small"
@@ -186,7 +195,7 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
           </el-table-column>
 
           <el-table-column prop="severity" label="Severity" width="120">
-            <template #default="{ row }">
+            <template #default="{ row }: { row: MonitoringAlert }">
               <el-tag
                 :type="alertSeverityType(row.severity)"
                 size="small"
@@ -197,7 +206,7 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
           </el-table-column>
 
           <el-table-column prop="message" label="Message" min-width="200">
-            <template #default="{ row }">
+            <template #default="{ row }: { row: MonitoringAlert }">
               <el-text class="alert-message">
                 {{ row.message || 'No message available' }}
               </el-text>
@@ -205,7 +214,7 @@ const alertSeverityType = (severity: string): 'danger' | 'warning' | 'info' | un
           </el-table-column>
 
           <el-table-column prop="last_seen" label="Last Seen" width="180">
-            <template #default="{ row }">
+            <template #default="{ row }: { row: MonitoringAlert }">
               <div class="time-cell">
                 <el-icon><Clock /></el-icon>
                 <span>{{ row.last_seen ? formatDateTime(row.last_seen) : 'Never' }}</span>

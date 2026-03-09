@@ -63,14 +63,20 @@ export interface MappingForm {
 
 export interface ProductionRecord {
   id: number
+  mapping_id: number
   machine_id: string
   product_id: string
+  session_id: number
+  sequence_number: number
+  record_date: string
   start_time: string
   end_time: string | null
-  stitch_count: number
-  status: string
-  duration_seconds: number | null
-  created_at: string
+  sewing_stitches: number
+  motor_stop_time: number
+  motor_stop_count: number
+  bt_stitches: number
+  fl_on_count: number
+  received_at: string
 }
 
 export interface ProductionListParams extends ApiListParams {

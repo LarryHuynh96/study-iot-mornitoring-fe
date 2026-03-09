@@ -7,7 +7,7 @@ import { useTable } from '@/composables/useTable'
 import { useDateFilter } from '@/composables/useDateFilter'
 import PageHeader from '@/components/common/PageHeader.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
-import { formatDateTime, formatDuration } from '@/utils/format'
+import { formatDateTime, calcDuration } from '@/utils/format'
 import type { ProductionRecord } from '@/types'
 
 const route = useRoute()
@@ -40,15 +40,6 @@ onMounted(() => {
 
 function goToDetail(row: ProductionRecord) {
   router.push({ name: 'ProductionDetail', params: { id: row.id } })
-}
-
-function statusTagType(status: string): 'success' | 'warning' | 'danger' | 'info' {
-  switch (status?.toUpperCase()) {
-    case 'COMPLETED': return 'success'
-    case 'IN_PROGRESS': return 'warning'
-    case 'FAILED': return 'danger'
-    default: return 'info'
-  }
 }
 
 async function handleExport() {
@@ -111,32 +102,35 @@ async function handleExport() {
         row-class-name="clickable-row"
         @row-click="goToDetail"
       >
-        <el-table-column prop="machine_id" label="Machine ID" min-width="120" />
-        <el-table-column prop="product_id" label="Product ID" min-width="120" />
-        <el-table-column label="Start Time" min-width="160">
+        <el-table-column prop="id" label="ID" width="60" align="center" />
+        <el-table-column prop="mapping_id" label="Mapping" width="90" align="center" />
+        <el-table-column prop="machine_id" label="Machine ID" min-width="110" />
+        <el-table-column label="Product ID" min-width="200">
           <template #default="{ row }">
-            {{ formatDateTime(row.start_time) }}
+            <span :title="row.product_id">{{ row.product_id }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="End Time" min-width="160">
+        <el-table-column prop="session_id" label="Session" width="80" align="center" />
+        <el-table-column prop="sequence_number" label="Seq #" width="70" align="center" />
+        <el-table-column prop="record_date" label="Date" width="110" />
+        <el-table-column prop="start_time" label="Start Time" width="110" />
+        <el-table-column prop="end_time" label="End Time" width="110" />
+        <el-table-column label="Duration" width="100">
           <template #default="{ row }">
-            {{ formatDateTime(row.end_time) }}
+            {{ calcDuration(row.start_time, row.end_time) }}
           </template>
         </el-table-column>
-        <el-table-column prop="stitch_count" label="Stitches" width="100" align="right" />
-        <el-table-column label="Duration" width="120">
+        <el-table-column prop="sewing_stitches" label="Stitches" width="90" align="right" />
+        <el-table-column prop="motor_stop_time" label="Stop Time" width="95" align="right" />
+        <el-table-column prop="motor_stop_count" label="Stop Count" width="100" align="right" />
+        <el-table-column prop="bt_stitches" label="BT Stitches" width="105" align="right" />
+        <el-table-column prop="fl_on_count" label="FL On" width="75" align="right" />
+        <el-table-column label="Received At" min-width="160">
           <template #default="{ row }">
-            {{ formatDuration(row.duration_seconds) }}
+            {{ formatDateTime(row.received_at) }}
           </template>
         </el-table-column>
-        <el-table-column label="Status" width="120" align="center">
-          <template #default="{ row }">
-            <el-tag :type="statusTagType(row.status)" size="small" effect="plain">
-              {{ row.status }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="Actions" width="80" align="center">
+        <el-table-column label="Actions" width="80" align="center" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link size="small" @click.stop="goToDetail(row)">
               Detail

@@ -33,3 +33,37 @@ export function formatDuration(seconds: number | null | undefined): string {
 export function formatIP(ip: string | null | undefined): string {
   return ip || '-'
 }
+
+/**
+ * Calculate duration between two HH:MM:SS[.ms] time strings
+ * and return a human-readable string like "2m 3.3s".
+ */
+export function calcDuration(
+  startTime: string | null | undefined,
+  endTime: string | null | undefined,
+): string {
+  if (!startTime || !endTime) return '-'
+  try {
+    const toSeconds = (t: string): number => {
+      const parts = t.split(':')
+      return (
+        Number(parts[0]) * 3600 +
+        Number(parts[1]) * 60 +
+        Number(parts[2])
+      )
+    }
+    const diff = toSeconds(endTime) - toSeconds(startTime)
+    if (diff < 0) return '-'
+    const h = Math.floor(diff / 3600)
+    const m = Math.floor((diff % 3600) / 60)
+    const s = diff % 60
+    const sFmt = Number.isInteger(s) ? `${s}s` : `${parseFloat(s.toFixed(1))}s`
+    const parts: string[] = []
+    if (h > 0) parts.push(`${h}h`)
+    if (m > 0) parts.push(`${m}m`)
+    parts.push(sFmt)
+    return parts.join(' ')
+  } catch {
+    return '-'
+  }
+}
